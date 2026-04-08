@@ -93,7 +93,7 @@ export default function ClientsCreate({ lawyers }) {
 
     return (
         <AppLayout title="Novo Cliente">
-            <Head title="Novo Cliente — LexFlow" />
+            <Head title="Novo Cliente — GertLex" />
 
             <div className="mb-6">
                 <Link href="/clientes" className="inline-flex items-center gap-1 text-sm text-[#6B7491] hover:text-[#E8EAF0]">

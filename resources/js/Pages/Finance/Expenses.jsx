@@ -48,7 +48,7 @@ export default function Expenses({ expenses, filters }) {
 
     return (
         <AppLayout title="Despesas">
-            <Head title="Despesas — LexFlow" />
+            <Head title="Despesas — GertLex" />
 
             <div className="flex items-center justify-between mb-6">
                 <div>

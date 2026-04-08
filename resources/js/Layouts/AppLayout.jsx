@@ -156,11 +156,11 @@ export default function AppLayout({ children, title }) {
                     ${collapsed ? 'justify-center' : ''}`}>
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C9A84C] to-[#7A5F28]
                         flex items-center justify-center shrink-0">
-                        <span className="text-black font-black text-sm">L</span>
+                        <span className="text-black font-black text-sm">G</span>
                     </div>
                     {!collapsed && (
                         <span className="text-lg font-bold text-[#E8EAF0]">
-                            Lex<span className="text-[#C9A84C]">Flow</span>
+                            Gert<span className="text-[#C9A84C]">Lex</span>
                         </span>
                     )}
                 </div>

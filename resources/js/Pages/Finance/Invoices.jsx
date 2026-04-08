@@ -57,7 +57,7 @@ export default function Invoices({ invoices, clients, filters }) {
 
     return (
         <AppLayout title="Cobranças">
-            <Head title="Cobranças — LexFlow" />
+            <Head title="Cobranças — GertLex" />
 
             <div className="flex items-center justify-between mb-6">
                 <div>

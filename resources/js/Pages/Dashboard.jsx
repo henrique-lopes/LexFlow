@@ -33,7 +33,7 @@ const areaLabels = {
 export default function Dashboard({ stats, recent_cases, today_events, upcoming_deadlines, finance_chart }) {
     return (
         <AppLayout title="Dashboard">
-            <Head title="Dashboard — LexFlow" />
+            <Head title="Dashboard — GertLex" />
 
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

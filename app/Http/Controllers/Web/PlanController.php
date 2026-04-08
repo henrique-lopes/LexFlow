@@ -36,7 +36,7 @@ class PlanController extends Controller
         // TODO: Integrar com Asaas para gerar checkout
         // Por ora, redireciona para WhatsApp com mensagem pré-preenchida
         $message = urlencode(
-            "Olá! Tenho interesse em assinar o plano *{$plan['label']}* do LexFlow " .
+            "Olá! Tenho interesse em assinar o plano *{$plan['label']}* do GertLex " .
             "para o escritório *{$workspace->name}*. Pode me ajudar?"
         );
 

@@ -79,7 +79,7 @@ export default function CalendarIndex({ events, cases, month }) {
 
     return (
         <AppLayout title="Agenda">
-            <Head title="Agenda — LexFlow" />
+            <Head title="Agenda — GertLex" />
 
             <div className="flex items-center justify-between mb-6">
                 <div>

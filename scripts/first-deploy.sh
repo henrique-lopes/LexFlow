@@ -1,11 +1,11 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════
-# LexFlow — Primeiro deploy (rode uma vez após server-setup.sh)
+# GertLex — Primeiro deploy (rode uma vez após server-setup.sh)
 # Execute como usuário deploy: bash first-deploy.sh
 # ═══════════════════════════════════════════════════════════════
 set -e
 
-APP_DIR="/var/www/lexflow"
+APP_DIR="/var/www/gertlex"
 cd ${APP_DIR}
 
 echo "→ Instalando dependências PHP..."

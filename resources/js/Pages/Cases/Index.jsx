@@ -46,7 +46,7 @@ export default function CasesIndex({ cases, lawyers, filters }) {
 
     return (
         <AppLayout title="Processos">
-            <Head title="Processos — LexFlow" />
+            <Head title="Processos — GertLex" />
 
             {/* Header */}
             <div className="flex items-center justify-between mb-6">

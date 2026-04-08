@@ -21,7 +21,7 @@ export default function ClientsIndex({ clients, filters }) {
 
     return (
         <AppLayout title="Clientes">
-            <Head title="Clientes — LexFlow" />
+            <Head title="Clientes — GertLex" />
 
             <div className="flex items-center justify-between mb-6">
                 <div>

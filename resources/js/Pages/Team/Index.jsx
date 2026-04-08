@@ -43,7 +43,7 @@ export default function TeamIndex({ members }) {
 
     return (
         <AppLayout title="Equipe">
-            <Head title="Equipe — LexFlow" />
+            <Head title="Equipe — GertLex" />
 
             <div className="flex items-center justify-between mb-6">
                 <div>

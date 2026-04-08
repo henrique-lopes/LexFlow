@@ -91,7 +91,7 @@ export default function AIIndex() {
 
     return (
         <AppLayout title="IA Jurídica">
-            <Head title="IA Jurídica — LexFlow" />
+            <Head title="IA Jurídica — GertLex" />
 
             <div className="flex flex-col h-[calc(100vh-8rem)] max-h-[800px]">
                 {/* Header */}

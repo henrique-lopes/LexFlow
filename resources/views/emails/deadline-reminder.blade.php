@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prazos Próximos — LexFlow</title>
+    <title>Prazos Próximos — GertLex</title>
     <style>
         body { font-family: 'DM Sans', Arial, sans-serif; background: #F0F2FA; margin: 0; padding: 0; }
         .wrapper { max-width: 560px; margin: 40px auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
@@ -32,7 +32,7 @@
 <body>
 <div class="wrapper">
     <div class="header">
-        <div class="logo">Lex<span>Flow</span></div>
+        <div class="logo">Gert<span>Lex</span></div>
         <p>Lembrete de prazos processuais</p>
     </div>
     <div class="body">
@@ -56,11 +56,11 @@
         @endforeach
 
         <p style="margin-top: 24px; text-align: center;">
-            <a href="{{ config('app.url') }}/processos" class="btn">Ver processos no LexFlow →</a>
+            <a href="{{ config('app.url') }}/processos" class="btn">Ver processos no GertLex →</a>
         </p>
     </div>
     <div class="footer">
-        <p>LexFlow · Você recebe este e-mail pois possui prazos nos próximos 5 dias.<br>
+        <p>GertLex · Você recebe este e-mail pois possui prazos nos próximos 5 dias.<br>
         Para desativar, acesse Configurações → Notificações.</p>
     </div>
 </div>

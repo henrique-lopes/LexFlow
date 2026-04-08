@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
         $ownerId = DB::table('users')->insertGetId([
             'uuid'                 => Str::uuid(),
             'name'                 => 'Dr. Marcos Viana',
-            'email'                => 'admin@lexflow.test',
+            'email'                => 'admin@gertlex.test',
             'password'             => Hash::make('password'),
             'oab_number'           => '123456',
             'oab_state'            => 'SP',
@@ -225,7 +225,7 @@ class DatabaseSeeder extends Seeder
             ['Aluguel — Sede Paulista',     'office',      8500],
             ['Salários equipe de apoio',    'staff',       6200],
             ['Custas processuais diversas', 'legal_costs', 1800],
-            ['Software LexFlow',            'technology',   497],
+            ['Software GertLex',            'technology',   497],
             ['Google Ads',                  'marketing',   1200],
         ];
         foreach ($expensesData as [$desc, $cat, $amount]) {
@@ -319,7 +319,7 @@ class DatabaseSeeder extends Seeder
             'uuid'              => Str::uuid(),
             'name'              => 'Silva Advocacia',
             'slug'              => 'silva-advocacia-' . Str::random(4),
-            'email'             => 'trial@lexflow.test',
+            'email'             => 'trial@gertlex.test',
             'plan'              => 'trial',
             'plan_status'       => 'trialing',
             'trial_ends_at'     => Carbon::now()->addDays(5), // 5 dias restantes (entra no alerta warning)
@@ -337,7 +337,7 @@ class DatabaseSeeder extends Seeder
         $trialUserId = DB::table('users')->insertGetId([
             'uuid'                 => Str::uuid(),
             'name'                 => 'Dra. Ana Silva',
-            'email'                => 'trial@lexflow.test',
+            'email'                => 'trial@gertlex.test',
             'password'             => Hash::make('password'),
             'current_workspace_id' => $trialWorkspaceId,
             'created_at'           => now(),
@@ -358,8 +358,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('');
         $this->command->info('✅  Seed concluído com sucesso!');
         $this->command->info('');
-        $this->command->info('📧  Login Premium : admin@lexflow.test  |  🔑 password');
-        $this->command->info('📧  Login Trial   : trial@lexflow.test   |  🔑 password');
+        $this->command->info('📧  Login Premium : admin@gertlex.test  |  🔑 password');
+        $this->command->info('📧  Login Trial   : trial@gertlex.test   |  🔑 password');
         $this->command->info('');
     }
 }

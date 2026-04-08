@@ -56,7 +56,7 @@ export default function SettingsIndex({ workspace }) {
 
     return (
         <AppLayout title="Configurações">
-            <Head title="Configurações — LexFlow" />
+            <Head title="Configurações — GertLex" />
 
             <h1 className="text-xl font-bold text-[#E8EAF0] mb-6">Configurações</h1>
 

@@ -1,4 +1,4 @@
-name: Deploy LexFlow
+name: Deploy GertLex
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             set -e
-            cd /var/www/lexflow
+            cd /var/www/gertlex
 
             echo "→ Pulling latest code..."
             git pull origin main
@@ -68,5 +68,5 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           source: "public/build"
-          target: "/var/www/lexflow/public"
+          target: "/var/www/gertlex/public"
           overwrite: true

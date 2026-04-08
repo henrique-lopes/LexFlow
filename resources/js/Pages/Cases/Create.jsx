@@ -59,7 +59,7 @@ export default function CasesCreate({ clients, lawyers }) {
 
     return (
         <AppLayout title="Novo Processo">
-            <Head title="Novo Processo — LexFlow" />
+            <Head title="Novo Processo — GertLex" />
 
             <div className="mb-6">
                 <Link href="/processos" className="inline-flex items-center gap-1 text-sm text-[#6B7491] hover:text-[#E8EAF0]">

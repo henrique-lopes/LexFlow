@@ -1,6 +1,6 @@
 <?php
 // ════════════════════════════════════════════════════════════════
-// routes/api.php  — API REST completa do LexFlow
+// routes/api.php  — API REST completa do GertLex
 // ════════════════════════════════════════════════════════════════
 
 use Illuminate\Support\Facades\Route;

@@ -138,7 +138,7 @@ export default function PlansIndex({ workspace, plans, trialDays, blockReason })
 
     return (
         <AppLayout title="Planos">
-            <Head title="Planos — LexFlow" />
+            <Head title="Planos — GertLex" />
 
             <div className="max-w-6xl mx-auto">
 
@@ -240,7 +240,7 @@ export default function PlansIndex({ workspace, plans, trialDays, blockReason })
                         </p>
                     </div>
                     <a
-                        href="https://wa.me/5511999999999?text=Olá!%20Tenho%20interesse%20no%20LexFlow%20Enterprise."
+                        href="https://wa.me/5511999999999?text=Olá!%20Tenho%20interesse%20no%20GertLex%20Enterprise."
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold

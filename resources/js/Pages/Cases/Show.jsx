@@ -73,7 +73,7 @@ export default function CasesShow({ case: c, lawyers }) {
 
     return (
         <AppLayout title={c.title}>
-            <Head title={`${c.title} — LexFlow`} />
+            <Head title={`${c.title} — GertLex`} />
 
             {/* Back */}
             <Link href="/processos" className="inline-flex items-center gap-1 text-sm text-[#6B7491] hover:text-[#E8EAF0] mb-4">

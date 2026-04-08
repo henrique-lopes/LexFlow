@@ -22,7 +22,7 @@ class DeadlineReminderMail extends Mailable
     {
         $count = count($this->cases);
         return new Envelope(
-            subject: "⚠️ LexFlow — {$count} prazo(s) próximo(s) nos seus processos",
+            subject: "⚠️ GertLex — {$count} prazo(s) próximo(s) nos seus processos",
         );
     }
 

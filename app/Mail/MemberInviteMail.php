@@ -30,7 +30,7 @@ class MemberInviteMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Você foi convidado para {$this->workspace->name} no LexFlow",
+            subject: "Você foi convidado para {$this->workspace->name} no GertLex",
         );
     }
 

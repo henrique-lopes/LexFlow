@@ -63,7 +63,7 @@ export default function DocumentsIndex({ documents, cases, filters }) {
 
     return (
         <AppLayout title="Documentos">
-            <Head title="Documentos — LexFlow" />
+            <Head title="Documentos — GertLex" />
 
             <div className="flex items-center justify-between mb-6">
                 <div>

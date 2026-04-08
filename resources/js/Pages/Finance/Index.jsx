@@ -24,7 +24,7 @@ const categoryLabels = {
 export default function FinanceIndex({ stats, chart, expenses_by_category, due_soon }) {
     return (
         <AppLayout title="Financeiro">
-            <Head title="Financeiro — LexFlow" />
+            <Head title="Financeiro — GertLex" />
 
             <div className="mb-6">
                 <h1 className="text-xl font-bold text-[#E8EAF0]">Financeiro</h1>

@@ -4,12 +4,12 @@ const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
     const [theme, setTheme] = useState(() => {
-        return localStorage.getItem('lexflow-theme') ?? 'dark';
+        return localStorage.getItem('gertlex-theme') ?? 'dark';
     });
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('lexflow-theme', theme);
+        localStorage.setItem('gertlex-theme', theme);
     }, [theme]);
 
     function toggleTheme() {

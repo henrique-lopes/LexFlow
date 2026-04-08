@@ -28,7 +28,7 @@ export default function ClientsShow({ client }) {
 
     return (
         <AppLayout title={client.company_name || client.name}>
-            <Head title={`${client.company_name || client.name} — LexFlow`} />
+            <Head title={`${client.company_name || client.name} — GertLex`} />
 
             <Link href="/clientes" className="inline-flex items-center gap-1 text-sm text-[#6B7491] hover:text-[#E8EAF0] mb-4">
                 <ChevronLeft size={16} /> Clientes

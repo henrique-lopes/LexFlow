@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convite LexFlow</title>
+    <title>Convite GertLex</title>
     <style>
         body { font-family: 'DM Sans', Arial, sans-serif; background: #F0F2FA; margin: 0; padding: 0; }
         .wrapper { max-width: 560px; margin: 40px auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
@@ -24,7 +24,7 @@
 <body>
 <div class="wrapper">
     <div class="header">
-        <div class="logo">Lex<span>Flow</span></div>
+        <div class="logo">Gert<span>Lex</span></div>
     </div>
     <div class="body">
         <h1>Você foi convidado! 🎉</h1>
@@ -40,7 +40,7 @@
         <p class="note">Este link expira em 24 horas. Se você não esperava este convite, pode ignorar este e-mail.</p>
     </div>
     <div class="footer">
-        <p>LexFlow — Sistema de Gestão Jurídica · <a href="{{ config('app.url') }}" style="color:#C9A84C;">{{ config('app.url') }}</a></p>
+        <p>GertLex — Sistema de Gestão Jurídica · <a href="{{ config('app.url') }}" style="color:#C9A84C;">{{ config('app.url') }}</a></p>
     </div>
 </div>
 </body>
