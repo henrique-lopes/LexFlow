@@ -10,7 +10,7 @@ class Workspace extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'uuid', 'name', 'slug', 'cnpj', 'oab_seccional', 'oab_number',
+        'uuid', 'type', 'name', 'slug', 'cnpj', 'oab_seccional', 'oab_number',
         'email', 'phone', 'logo_url',
         'address_street', 'address_number', 'address_complement',
         'address_neighborhood', 'address_city', 'address_state', 'address_zipcode',
@@ -32,9 +32,11 @@ class Workspace extends Model
 
     // ── Catálogo de planos ───────────────────────────────
     public const PLANS = [
+        // ── Planos Escritório ──────────────────────────────
         'trial' => [
             'label'       => 'Trial',
             'price'       => 0,
+            'type'        => 'firm',
             'max_lawyers' => 3,
             'max_cases'   => 20,
             'has_ai'      => false,
@@ -45,6 +47,7 @@ class Workspace extends Model
         'starter' => [
             'label'       => 'Starter',
             'price'       => 197,
+            'type'        => 'firm',
             'max_lawyers' => 3,
             'max_cases'   => 100,
             'has_ai'      => false,
@@ -54,6 +57,7 @@ class Workspace extends Model
         'pro' => [
             'label'       => 'Pro',
             'price'       => 397,
+            'type'        => 'firm',
             'max_lawyers' => 10,
             'max_cases'   => 500,
             'has_ai'      => true,
@@ -63,11 +67,44 @@ class Workspace extends Model
         'premium' => [
             'label'       => 'Premium',
             'price'       => 797,
+            'type'        => 'firm',
             'max_lawyers' => -1,
             'max_cases'   => -1,
             'has_ai'      => true,
             'has_client_portal' => true,
             'has_white_label'   => true,
+        ],
+        // ── Planos Solo (Advogado Autônomo) ────────────────
+        'solo_trial' => [
+            'label'       => 'Trial',
+            'price'       => 0,
+            'type'        => 'solo',
+            'max_lawyers' => 1,
+            'max_cases'   => 20,
+            'has_ai'      => false,
+            'has_client_portal' => false,
+            'has_white_label'   => false,
+            'trial_days'  => 7,
+        ],
+        'solo_starter' => [
+            'label'       => 'Solo Starter',
+            'price'       => 97,
+            'type'        => 'solo',
+            'max_lawyers' => 1,
+            'max_cases'   => 50,
+            'has_ai'      => false,
+            'has_client_portal' => false,
+            'has_white_label'   => false,
+        ],
+        'solo_pro' => [
+            'label'       => 'Solo Pro',
+            'price'       => 197,
+            'type'        => 'solo',
+            'max_lawyers' => 1,
+            'max_cases'   => -1,
+            'has_ai'      => true,
+            'has_client_portal' => false,
+            'has_white_label'   => false,
         ],
     ];
 
@@ -85,6 +122,15 @@ class Workspace extends Model
     public function invoices() { return $this->hasMany(Invoice::class); }
     public function expenses() { return $this->hasMany(Expense::class); }
     public function events()   { return $this->hasMany(Event::class); }
+
+    // ── Type helpers ─────────────────────────────────────
+    public function isSolo(): bool {
+        return $this->type === 'solo';
+    }
+
+    public function isFirm(): bool {
+        return $this->type === 'firm';
+    }
 
     // ── Status helpers ───────────────────────────────────
     public function isOnTrial(): bool {

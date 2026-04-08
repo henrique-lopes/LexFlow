@@ -8,11 +8,22 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/Contexts/ThemeContext';
 
-const navItems = [
+const firmNavItems = [
     { href: '/',              label: 'Dashboard',    icon: LayoutDashboard },
     { href: '/processos',     label: 'Processos',    icon: Briefcase },
     { href: '/clientes',      label: 'Clientes',     icon: Users },
     { href: '/equipe',        label: 'Equipe',       icon: Users },
+    { href: '/financeiro',    label: 'Financeiro',   icon: DollarSign },
+    { href: '/agenda',        label: 'Agenda',       icon: Calendar },
+    { href: '/documentos',    label: 'Documentos',   icon: FolderOpen },
+    { href: '/ia',            label: 'IA Jurídica',  icon: Sparkles },
+    { href: '/planos',        label: 'Planos',       icon: CreditCard },
+];
+
+const soloNavItems = [
+    { href: '/',              label: 'Dashboard',    icon: LayoutDashboard },
+    { href: '/processos',     label: 'Processos',    icon: Briefcase },
+    { href: '/clientes',      label: 'Clientes',     icon: Users },
     { href: '/financeiro',    label: 'Financeiro',   icon: DollarSign },
     { href: '/agenda',        label: 'Agenda',       icon: Calendar },
     { href: '/documentos',    label: 'Documentos',   icon: FolderOpen },
@@ -125,6 +136,7 @@ function TrialBanner({ trial }) {
 export default function AppLayout({ children, title }) {
     const { auth, flash, trial } = usePage().props;
     const isSuperAdmin = auth?.isSuperAdmin;
+    const navItems = auth?.workspace?.type === 'solo' ? soloNavItems : firmNavItems;
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();

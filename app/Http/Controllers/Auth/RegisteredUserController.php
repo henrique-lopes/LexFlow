@@ -27,24 +27,27 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'           => 'required|string|max:255',
-            'email'          => 'required|string|lowercase|email|max:255|unique:users',
-            'password'       => ['required', 'confirmed', Rules\Password::defaults()],
-            'workspace_name' => 'required|string|max:255',
-            'oab_number'     => 'nullable|string|max:20',
+            'name'             => 'required|string|max:255',
+            'email'            => 'required|string|lowercase|email|max:255|unique:users',
+            'password'         => ['required', 'confirmed', Rules\Password::defaults()],
+            'workspace_name'   => 'required|string|max:255',
+            'workspace_type'   => 'required|in:solo,firm',
+            'oab_number'       => 'nullable|string|max:20',
         ]);
 
         DB::transaction(function () use ($request) {
-            $slug = Str::slug($request->workspace_name) . '-' . Str::random(4);
-
-            $trialConfig = Workspace::PLANS['trial'];
+            $slug        = Str::slug($request->workspace_name) . '-' . Str::random(4);
+            $isSolo      = $request->workspace_type === 'solo';
+            $planKey     = $isSolo ? 'solo_trial' : 'trial';
+            $trialConfig = Workspace::PLANS[$planKey];
 
             $workspace = Workspace::create([
                 'uuid'              => Str::uuid(),
+                'type'              => $request->workspace_type,
                 'name'              => $request->workspace_name,
                 'slug'              => $slug,
                 'email'             => $request->email,
-                'plan'              => 'trial',
+                'plan'              => $planKey,
                 'plan_status'       => 'trialing',
                 'trial_ends_at'     => now()->addDays($trialConfig['trial_days']),
                 'max_lawyers'       => $trialConfig['max_lawyers'],

@@ -1,6 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Scale } from 'lucide-react';
+import { Scale, Users, User } from 'lucide-react';
+
+function TypeCard({ type, selected, onClick, icon: Icon, title, description }) {
+    return (
+        <button
+            type="button"
+            onClick={() => onClick(type)}
+            className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-left
+                ${selected
+                    ? 'border-[#C9A84C] bg-[#C9A84C]/10'
+                    : 'border-[#1E2330] hover:border-[#C9A84C]/40 bg-[#0D0F14]'
+                }`}
+        >
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center
+                ${selected ? 'bg-[#C9A84C]/20' : 'bg-[#1E2330]'}`}>
+                <Icon size={20} className={selected ? 'text-[#C9A84C]' : 'text-[#6B7491]'} />
+            </div>
+            <div>
+                <p className={`text-sm font-semibold ${selected ? 'text-[#C9A84C]' : 'text-[#E8EAF0]'}`}>{title}</p>
+                <p className="text-xs text-[#6B7491] mt-0.5">{description}</p>
+            </div>
+        </button>
+    );
+}
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -9,6 +32,7 @@ export default function Register() {
         password:              '',
         password_confirmation: '',
         workspace_name:        '',
+        workspace_type:        'firm',
         oab_number:            '',
     });
 
@@ -20,6 +44,8 @@ export default function Register() {
         e.preventDefault();
         post(route('register'));
     }
+
+    const isSolo = data.workspace_type === 'solo';
 
     return (
         <div className="min-h-screen bg-[#0D0F14] flex items-center justify-center p-4">
@@ -38,18 +64,39 @@ export default function Register() {
                 </div>
 
                 <div className="bg-[#13161E] border border-[#1E2330] rounded-2xl p-8">
-                    <h2 className="text-lg font-semibold text-[#E8EAF0] mb-6">Criar nova conta</h2>
+                    <h2 className="text-lg font-semibold text-[#E8EAF0] mb-1">Criar nova conta</h2>
+                    <p className="text-xs text-[#6B7491] mb-5">Como você vai usar o GertLex?</p>
+
+                    {/* Type selector */}
+                    <div className="flex gap-3 mb-5">
+                        <TypeCard
+                            type="firm"
+                            selected={data.workspace_type === 'firm'}
+                            onClick={v => setData('workspace_type', v)}
+                            icon={Users}
+                            title="Escritório"
+                            description="Equipe com vários advogados"
+                        />
+                        <TypeCard
+                            type="solo"
+                            selected={data.workspace_type === 'solo'}
+                            onClick={v => setData('workspace_type', v)}
+                            icon={User}
+                            title="Autônomo"
+                            description="Advogado independente"
+                        />
+                    </div>
 
                     <form onSubmit={submit} className="space-y-4">
                         <div>
                             <label className="block text-xs font-medium text-[#6B7491] uppercase tracking-wider mb-1.5">
-                                Nome do Escritório *
+                                {isSolo ? 'Seu Nome Profissional *' : 'Nome do Escritório *'}
                             </label>
                             <input
                                 type="text"
                                 value={data.workspace_name}
                                 onChange={e => setData('workspace_name', e.target.value)}
-                                placeholder="Silva & Advogados Associados"
+                                placeholder={isSolo ? 'Dr. João Silva' : 'Silva & Advogados Associados'}
                                 className="w-full bg-[#0D0F14] border border-[#1E2330] rounded-lg px-4 py-2.5
                                     text-sm text-[#E8EAF0] placeholder-[#6B7491]
                                     focus:outline-none focus:border-[#C9A84C] transition-colors"
