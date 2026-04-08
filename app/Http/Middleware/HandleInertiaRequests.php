@@ -22,7 +22,16 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user'         => $request->user(),
-                'workspace'    => $workspace,
+                'workspace'    => $workspace ? [
+                    'id'         => $workspace->id,
+                    'name'       => $workspace->name,
+                    'type'       => $workspace->type,
+                    'plan'       => $workspace->plan,
+                    'plan_status'=> $workspace->plan_status,
+                    'has_ai'     => $workspace->has_ai,
+                    'max_lawyers'=> $workspace->max_lawyers,
+                    'max_cases'  => $workspace->max_cases,
+                ] : null,
                 'isSuperAdmin' => (bool) $request->user()?->is_super_admin,
             ],
             'flash' => [
