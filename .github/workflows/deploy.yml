@@ -33,6 +33,7 @@ jobs:
           key: ${{ secrets.SECRET_GERTLEX }}
           script: |
             set -e
+            git config --global --add safe.directory /var/www/gertlex
             cd /var/www/gertlex
 
             echo "→ Pulling latest code..."
