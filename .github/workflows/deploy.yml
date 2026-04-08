@@ -10,27 +10,13 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install JS dependencies
-        run: npm ci --legacy-peer-deps
-
-      - name: Build assets
-        run: npm run build
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.SECRET_GERTLEX }}
+          command_timeout: 10m
           script: |
             set -e
             git config --global --add safe.directory /var/www/gertlex
@@ -41,6 +27,10 @@ jobs:
 
             echo "→ Installing PHP dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "→ Building frontend assets..."
+            npm ci --legacy-peer-deps
+            npm run build
 
             echo "→ Caching config/routes/views..."
             php artisan config:cache
@@ -61,13 +51,3 @@ jobs:
             sudo systemctl reload php8.3-fpm
 
             echo "✅ Deploy concluído!"
-
-      - name: Copy built assets to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.SECRET_GERTLEX }}
-          source: "public/build"
-          target: "/var/www/gertlex/public"
-          overwrite: true
