@@ -97,8 +97,13 @@ export default function CasesIndex({ cases, lawyers, filters }) {
                 }),
             });
             const data = await res.json();
-            if (!res.ok) alert(data.error ?? 'Erro ao importar.');
-            else setImported(prev => ({ ...prev, [c.cnj_number]: data.uuid }));
+            if (!res.ok) {
+                const msg = data.error
+                    ?? (data.errors ? Object.values(data.errors).flat().join(' ') : null)
+                    ?? data.message
+                    ?? 'Erro ao importar.';
+                alert(msg);
+            } else setImported(prev => ({ ...prev, [c.cnj_number]: data.uuid }));
         } finally {
             setImporting(null);
         }

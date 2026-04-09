@@ -90,6 +90,10 @@ class DataJudController extends Controller
         $wsId      = $request->user()->current_workspace_id;
         $workspace = $request->user()->currentWorkspace;
 
+        if (!$workspace) {
+            return response()->json(['error' => 'Workspace não encontrado.'], 422);
+        }
+
         if (!$workspace->canAddCase()) {
             return response()->json([
                 'error' => "Limite de {$workspace->max_cases} processos atingido.",
