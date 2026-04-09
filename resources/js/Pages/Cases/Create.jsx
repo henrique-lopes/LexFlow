@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Button from '@/Components/UI/Button';
@@ -43,6 +44,16 @@ function FSelect({ children, ...props }) {
     );
 }
 
+function formatCurrency(raw) {
+    const digits = raw.replace(/\D/g, '');
+    if (!digits) return '';
+    const num = parseInt(digits, 10) / 100;
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function parseCurrency(formatted) {
+    return formatted.replace(/\./g, '').replace(',', '.');
+}
+
 export default function CasesCreate({ clients, lawyers }) {
     const { data, setData, post, processing, errors } = useForm({
         title: '', client_id: '', responsible_user_id: '',
@@ -50,7 +61,12 @@ export default function CasesCreate({ clients, lawyers }) {
         status: 'active', phase: '', side: 'author',
         fee_type: 'fixed', fee_amount: '', fee_success_pct: '', case_value: '',
         filed_at: '', next_deadline: '', notes: '', lawyer_ids: [],
+        opposing_party: '', opposing_lawyer: '', opposing_oab: '',
     });
+
+    const [caseValueDisplay, setCaseValueDisplay] = useState(
+        data.case_value ? Number(data.case_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''
+    );
 
     function submit(e) {
         e.preventDefault();
@@ -168,6 +184,30 @@ export default function CasesCreate({ clients, lawyers }) {
                             </div>
                         </div>
 
+                        {/* Opposing party */}
+                        <div className="bg-[#13161E] border border-[#1E2330] rounded-xl p-6">
+                            <h3 className="text-sm font-semibold text-[#E8EAF0] mb-4">Parte Contrária</h3>
+                            <div className="space-y-4">
+                                <Field label="Nome da Parte Contrária">
+                                    <FInput value={data.opposing_party}
+                                        onChange={e => setData('opposing_party', e.target.value)}
+                                        placeholder="Nome do réu ou autor contrário" />
+                                </Field>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Field label="Advogado Contrário">
+                                        <FInput value={data.opposing_lawyer}
+                                            onChange={e => setData('opposing_lawyer', e.target.value)}
+                                            placeholder="Dr. Nome do Advogado" />
+                                    </Field>
+                                    <Field label="OAB do Advogado Contrário">
+                                        <FInput value={data.opposing_oab}
+                                            onChange={e => setData('opposing_oab', e.target.value)}
+                                            placeholder="SP 123456" />
+                                    </Field>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Notes */}
                         <div className="bg-[#13161E] border border-[#1E2330] rounded-xl p-6">
                             <h3 className="text-sm font-semibold text-[#E8EAF0] mb-4">Observações</h3>
@@ -222,9 +262,19 @@ export default function CasesCreate({ clients, lawyers }) {
                                     </Field>
                                 )}
                                 <Field label="Valor da Causa (R$)">
-                                    <FInput type="number" step="0.01" value={data.case_value}
-                                        onChange={e => setData('case_value', e.target.value)}
-                                        placeholder="0,00" />
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#6B7491]">R$</span>
+                                        <FInput
+                                            value={caseValueDisplay}
+                                            onChange={e => {
+                                                const fmt = formatCurrency(e.target.value);
+                                                setCaseValueDisplay(fmt);
+                                                setData('case_value', parseCurrency(fmt));
+                                            }}
+                                            placeholder="0,00"
+                                            className="pl-9"
+                                        />
+                                    </div>
                                 </Field>
                             </div>
                         </div>

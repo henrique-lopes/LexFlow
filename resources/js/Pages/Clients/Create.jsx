@@ -31,10 +31,25 @@ function Field({ label, error, required, children }) {
     );
 }
 
+function formatCPF(v) {
+    return v.replace(/\D/g, '').slice(0, 11)
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+function formatCNPJ(v) {
+    return v.replace(/\D/g, '').slice(0, 14)
+        .replace(/(\d{2})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1/$2')
+        .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+}
+
 export default function ClientsCreate({ lawyers }) {
     const { data, setData, post, processing, errors } = useForm({
         type: 'individual', name: '', email: '', phone: '',
-        cpf: '', cnpj: '', company_name: '', trade_name: '',
+        cpf: '', rg: '', nationality: 'Brasileira', marital_status: '', profession: '',
+        cnpj: '', company_name: '', trade_name: '',
         responsible_user_id: '',
         address_street: '', address_number: '', address_complement: '',
         address_neighborhood: '', address_city: '', address_state: '', address_zipcode: '',
@@ -134,7 +149,8 @@ export default function ClientsCreate({ lawyers }) {
                                         <div className="flex gap-3">
                                             <div className="flex-1">
                                                 <Field label="CNPJ" error={errors.cnpj}>
-                                                    <FInput value={data.cnpj} onChange={e => setData('cnpj', e.target.value)}
+                                                    <FInput value={data.cnpj}
+                                                        onChange={e => setData('cnpj', formatCNPJ(e.target.value))}
                                                         placeholder="00.000.000/0001-00" onBlur={fetchCNPJ} />
                                                 </Field>
                                             </div>
@@ -160,10 +176,37 @@ export default function ClientsCreate({ lawyers }) {
                                             <FInput value={data.name} onChange={e => setData('name', e.target.value)}
                                                 placeholder="João da Silva" />
                                         </Field>
-                                        <Field label="CPF" error={errors.cpf}>
-                                            <FInput value={data.cpf} onChange={e => setData('cpf', e.target.value)}
-                                                placeholder="000.000.000-00" />
-                                        </Field>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Field label="CPF" error={errors.cpf}>
+                                                <FInput value={data.cpf}
+                                                    onChange={e => setData('cpf', formatCPF(e.target.value))}
+                                                    placeholder="000.000.000-00" />
+                                            </Field>
+                                            <Field label="RG">
+                                                <FInput value={data.rg} onChange={e => setData('rg', e.target.value)}
+                                                    placeholder="00.000.000-0" />
+                                            </Field>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <Field label="Nacionalidade">
+                                                <FInput value={data.nationality} onChange={e => setData('nationality', e.target.value)}
+                                                    placeholder="Brasileira" />
+                                            </Field>
+                                            <Field label="Estado Civil">
+                                                <FSelect value={data.marital_status} onChange={e => setData('marital_status', e.target.value)}>
+                                                    <option value="">Selecione...</option>
+                                                    <option value="solteiro">Solteiro(a)</option>
+                                                    <option value="casado">Casado(a)</option>
+                                                    <option value="divorciado">Divorciado(a)</option>
+                                                    <option value="viuvo">Viúvo(a)</option>
+                                                    <option value="uniao_estavel">União Estável</option>
+                                                </FSelect>
+                                            </Field>
+                                            <Field label="Profissão">
+                                                <FInput value={data.profession} onChange={e => setData('profession', e.target.value)}
+                                                    placeholder="Ex: Comerciante" />
+                                            </Field>
+                                        </div>
                                     </>
                                 )}
 

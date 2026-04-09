@@ -117,6 +117,9 @@ class CaseWebController extends Controller
             'next_deadline'       => 'nullable|date',
             'notes'               => 'nullable|string',
             'lawyer_ids'          => 'nullable|array',
+            'opposing_party'      => 'nullable|string|max:255',
+            'opposing_lawyer'     => 'nullable|string|max:255',
+            'opposing_oab'        => 'nullable|string|max:30',
         ]);
 
         $case = LegalCase::create([
@@ -217,6 +220,9 @@ class CaseWebController extends Controller
             'filed_at'            => 'nullable|date',
             'next_deadline'       => 'nullable|date',
             'notes'               => 'nullable|string',
+            'opposing_party'      => 'nullable|string|max:255',
+            'opposing_lawyer'     => 'nullable|string|max:255',
+            'opposing_oab'        => 'nullable|string|max:30',
         ]);
 
         $case->update($data);
