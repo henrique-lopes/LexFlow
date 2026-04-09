@@ -103,7 +103,10 @@ export default function CasesIndex({ cases, lawyers, filters }) {
                     ?? data.message
                     ?? 'Erro ao importar.';
                 alert(msg);
-            } else setImported(prev => ({ ...prev, [c.cnj_number]: data.uuid }));
+            } else {
+                setImported(prev => ({ ...prev, [c.cnj_number]: data.uuid }));
+                router.visit(`/processos/${data.uuid}`);
+            }
         } finally {
             setImporting(null);
         }
