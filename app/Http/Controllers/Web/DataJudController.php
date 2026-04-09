@@ -30,14 +30,25 @@ class DataJudController extends Controller
         $index  = $this->tribunalIndex($request->tribunal);
 
         $response = Http::withHeaders([
-            'Authorization' => "ApiKey {$apiKey}",
+            'Authorization' => "APIKey {$apiKey}",
             'Content-Type'  => 'application/json',
         ])->post(self::API_URL . "/api_publica_{$index}/_search", [
             'query' => [
                 'bool' => [
                     'must' => [
-                        ['match' => ['numeroOAB' => $oab]],
-                        ['match' => ['estadoOAB' => $state]],
+                        [
+                            'nested' => [
+                                'path'  => 'advocacia',
+                                'query' => [
+                                    'bool' => [
+                                        'must' => [
+                                            ['match' => ['advocacia.OAB'    => $oab]],
+                                            ['match' => ['advocacia.estado' => $state]],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -45,7 +56,7 @@ class DataJudController extends Controller
             '_source' => [
                 'numeroProcesso', 'classe.nome', 'assuntos',
                 'orgaoJulgador.nome', 'tribunal', 'dataAjuizamento',
-                'partes', 'movimentos',
+                'partes', 'advocacia',
             ],
         ]);
 
