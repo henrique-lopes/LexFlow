@@ -132,21 +132,21 @@ export default function CalendarIndex({ events, cases, month, googleConnected })
                             >
                                 <RefreshCw size={14} /> Sincronizar Google
                             </button>
-                            <Link
+                            <a
                                 href="/agenda/google/desconectar"
                                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#13161E] border border-[#1E2330] text-[#6B7491] hover:text-[#E05555] hover:border-[#E05555]/30 transition-colors"
                                 title="Desconectar Google Agenda"
                             >
                                 <Unlink size={14} /> Desconectar
-                            </Link>
+                            </a>
                         </div>
                     ) : (
-                        <Link
+                        <a
                             href="/agenda/google/conectar"
                             className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#4A7CFF]/10 border border-[#4A7CFF]/30 text-[#4A7CFF] hover:bg-[#4A7CFF]/20 transition-colors"
                         >
                             <CalendarDays size={14} /> Conectar Google Agenda
-                        </Link>
+                        </a>
                     )}
 
                     <div className="flex items-center gap-1">
