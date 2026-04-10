@@ -87,13 +87,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Agenda
         Route::get('/agenda',                    [CalendarWebController::class, 'index'])->name('calendar.index');
         Route::post('/agenda',                   [CalendarWebController::class, 'store'])->name('calendar.store');
-        Route::put('/agenda/{id}',               [CalendarWebController::class, 'update'])->name('calendar.update');
-        Route::delete('/agenda/{id}',            [CalendarWebController::class, 'destroy'])->name('calendar.destroy');
 
-        // Google Calendar
+        // Google Calendar (deve vir antes de /agenda/{id})
         Route::get('/agenda/google/conectar',    [GoogleCalendarController::class, 'redirect'])->name('google.calendar.redirect');
         Route::get('/agenda/google/desconectar', [GoogleCalendarController::class, 'disconnect'])->name('google.calendar.disconnect');
         Route::post('/agenda/google/sincronizar',[GoogleCalendarController::class, 'sync'])->name('google.calendar.sync');
+
+        Route::put('/agenda/{id}',               [CalendarWebController::class, 'update'])->name('calendar.update');
+        Route::delete('/agenda/{id}',            [CalendarWebController::class, 'destroy'])->name('calendar.destroy');
 
         // Documentos
         Route::get('/documentos',                [DocumentWebController::class, 'index'])->name('documents.index');
