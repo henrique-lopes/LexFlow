@@ -15,7 +15,7 @@ class Event extends Model
     protected $fillable = [
         'uuid', 'workspace_id', 'case_id', 'created_by',
         'title', 'description', 'type', 'starts_at', 'ends_at', 'all_day',
-        'location', 'meeting_url', 'status',
+        'is_virtual', 'location', 'meeting_url', 'status',
         'alert_1d', 'alert_5d', 'alert_sent', 'google_event_id',
     ];
 
@@ -23,6 +23,7 @@ class Event extends Model
         'starts_at'  => 'datetime',
         'ends_at'    => 'datetime',
         'all_day'    => 'boolean',
+        'is_virtual' => 'boolean',
         'alert_1d'   => 'boolean',
         'alert_5d'   => 'boolean',
         'alert_sent' => 'boolean',
