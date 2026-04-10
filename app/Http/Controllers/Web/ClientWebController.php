@@ -69,7 +69,7 @@ class ClientWebController extends Controller
 
         $data = $request->validate([
             'type'                => 'required|in:individual,company',
-            'name'                => 'required|string|max:255',
+            'name'                => 'nullable|string|max:255',
             'email'               => 'nullable|email|max:255',
             'phone'               => 'nullable|string|max:20',
             'cpf'                 => 'nullable|string|max:14',
@@ -91,6 +91,11 @@ class ClientWebController extends Controller
             'notes'               => 'nullable|string',
             'origin'              => 'nullable|string|max:50',
         ]);
+
+        // Para PJ, o campo `name` é preenchido automaticamente com a razão social
+        if ($data['type'] === 'company' && empty($data['name'])) {
+            $data['name'] = $data['company_name'] ?? $data['trade_name'] ?? 'Empresa';
+        }
 
         $client = Client::create([
             ...$data,
@@ -146,7 +151,7 @@ class ClientWebController extends Controller
         $client = Client::where('workspace_id', $wsId)->where('uuid', $uuid)->firstOrFail();
 
         $data = $request->validate([
-            'name'                => 'required|string|max:255',
+            'name'                => 'nullable|string|max:255',
             'email'               => 'nullable|email|max:255',
             'phone'               => 'nullable|string|max:20',
             'cpf'                 => 'nullable|string|max:14',
@@ -168,6 +173,11 @@ class ClientWebController extends Controller
             'status'              => 'nullable|in:active,inactive,suspended',
             'notes'               => 'nullable|string',
         ]);
+
+        // Para PJ, sincroniza o campo `name` com a razão social se vazio
+        if ($client->type === 'company' && empty($data['name'])) {
+            $data['name'] = $data['company_name'] ?? $data['trade_name'] ?? $client->name;
+        }
 
         $client->update($data);
 

@@ -7,10 +7,20 @@ import EmptyState from '@/Components/UI/EmptyState';
 import Modal from '@/Components/UI/Modal';
 import { Plus, Search, Filter, Briefcase, ChevronLeft, ChevronRight, Download, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
-const TRIBUNAIS = [
-    'TJSP','TJRJ','TJMG','TJRS','TJPR','TJSC','TJBA','TJPE','TJCE','TJGO',
-    'TRT2','TRT15','STJ','STF',
-];
+const TRIBUNAIS = {
+    'Justiça Estadual': [
+        'TJAC','TJAL','TJAM','TJAP','TJBA','TJCE','TJDF','TJES','TJGO',
+        'TJMA','TJMG','TJMS','TJMT','TJPA','TJPB','TJPE','TJPI','TJPR',
+        'TJRJ','TJRN','TJRO','TJRR','TJRS','TJSC','TJSE','TJSP','TJTO',
+    ],
+    'Justiça Federal (TRF)': ['TRF1','TRF2','TRF3','TRF4','TRF5','TRF6'],
+    'Justiça do Trabalho (TRT)': [
+        'TRT1','TRT2','TRT3','TRT4','TRT5','TRT6','TRT7','TRT8','TRT9','TRT10',
+        'TRT11','TRT12','TRT13','TRT14','TRT15','TRT16','TRT17','TRT18','TRT19',
+        'TRT20','TRT21','TRT22','TRT23','TRT24',
+    ],
+    'Tribunais Superiores': ['TST','STJ','STF'],
+};
 
 function formatCurrency(v) {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v ?? 0);
@@ -299,7 +309,11 @@ export default function CasesIndex({ cases, lawyers, filters }) {
                             <label className="block text-xs font-medium text-[#6B7491] uppercase tracking-wider mb-1.5">Tribunal *</label>
                             <select value={tribunal} onChange={e => setTribunal(e.target.value)}
                                 className="w-full bg-[#0D0F14] border border-[#1E2330] rounded-lg px-3 py-2.5 text-sm text-[#E8EAF0] focus:outline-none focus:border-[#C9A84C]">
-                                {TRIBUNAIS.map(t => <option key={t} value={t}>{t}</option>)}
+                                {Object.entries(TRIBUNAIS).map(([group, items]) => (
+                                    <optgroup key={group} label={group}>
+                                        {items.map(t => <option key={t} value={t}>{t}</option>)}
+                                    </optgroup>
+                                ))}
                             </select>
                         </div>
                     </div>
