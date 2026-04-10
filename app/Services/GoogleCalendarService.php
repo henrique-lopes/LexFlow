@@ -14,9 +14,9 @@ class GoogleCalendarService
     private const CALENDAR_URL = 'https://www.googleapis.com/calendar/v3';
     private const AUTH_URL     = 'https://accounts.google.com/o/oauth2/v2/auth';
 
-    private string $clientId;
-    private string $clientSecret;
-    private string $redirectUri;
+    private ?string $clientId;
+    private ?string $clientSecret;
+    private ?string $redirectUri;
 
     public function __construct()
     {
