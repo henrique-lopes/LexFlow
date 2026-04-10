@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\WorkspaceMember;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -172,6 +173,102 @@ class ClientWebController extends Controller
 
         return redirect()->route('clients.show', $client->uuid)
             ->with('success', 'Cliente atualizado com sucesso!');
+    }
+
+    public function extractFromProcuracao(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+        ]);
+
+        $apiKey = config('services.anthropic.key');
+        if (!$apiKey) {
+            return response()->json(['error' => 'API da IA não configurada.'], 503);
+        }
+
+        $file     = $request->file('file');
+        $mime     = $file->getMimeType();
+        $base64   = base64_encode(file_get_contents($file->getRealPath()));
+
+        // Monta o bloco de conteúdo conforme o tipo
+        if ($mime === 'application/pdf') {
+            $contentBlock = [
+                'type'   => 'document',
+                'source' => [
+                    'type'       => 'base64',
+                    'media_type' => 'application/pdf',
+                    'data'       => $base64,
+                ],
+            ];
+        } else {
+            $contentBlock = [
+                'type'   => 'image',
+                'source' => [
+                    'type'       => 'base64',
+                    'media_type' => $mime,
+                    'data'       => $base64,
+                ],
+            ];
+        }
+
+        $prompt = <<<EOT
+Analise este documento (procuração ou contrato) e extraia os dados do OUTORGANTE (cliente).
+Retorne APENAS um JSON válido com os seguintes campos (use null quando não encontrar):
+{
+  "name": "nome completo",
+  "nationality": "nacionalidade",
+  "marital_status": "solteiro|casado|divorciado|viuvo|uniao_estavel ou null",
+  "profession": "profissão",
+  "rg": "número do RG",
+  "cpf": "CPF formatado como 000.000.000-00",
+  "email": "e-mail ou null",
+  "phone": "telefone ou null",
+  "address_street": "logradouro",
+  "address_number": "número",
+  "address_complement": "complemento ou null",
+  "address_neighborhood": "bairro",
+  "address_city": "cidade",
+  "address_state": "UF com 2 letras",
+  "address_zipcode": "CEP somente números"
+}
+Retorne somente o JSON, sem texto adicional.
+EOT;
+
+        $response = Http::withHeaders([
+            'x-api-key'         => $apiKey,
+            'anthropic-version' => '2023-06-01',
+            'anthropic-beta'    => 'pdfs-2024-09-25',
+            'content-type'      => 'application/json',
+        ])->timeout(30)->post('https://api.anthropic.com/v1/messages', [
+            'model'      => 'claude-sonnet-4-6',
+            'max_tokens' => 1024,
+            'messages'   => [[
+                'role'    => 'user',
+                'content' => [
+                    $contentBlock,
+                    ['type' => 'text', 'text' => $prompt],
+                ],
+            ]],
+        ]);
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'Erro ao processar o documento com IA.'], 500);
+        }
+
+        $text = $response->json('content.0.text', '');
+
+        // Extrai o JSON da resposta
+        preg_match('/\{.*\}/s', $text, $matches);
+        if (empty($matches)) {
+            return response()->json(['error' => 'Não foi possível extrair os dados do documento.'], 422);
+        }
+
+        $extracted = json_decode($matches[0], true);
+        if (!$extracted) {
+            return response()->json(['error' => 'Resposta inválida da IA.'], 422);
+        }
+
+        return response()->json(['data' => $extracted]);
     }
 
     public function destroy(Request $request, string $uuid)

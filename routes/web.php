@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/clientes',                  [ClientWebController::class, 'index'])->name('clients.index');
         Route::get('/clientes/novo',             [ClientWebController::class, 'create'])->name('clients.create');
         Route::post('/clientes',                 [ClientWebController::class, 'store'])->name('clients.store');
+        Route::post('/clientes/extrair-procuracao', [ClientWebController::class, 'extractFromProcuracao'])->name('clients.extract');
         Route::get('/clientes/{uuid}',           [ClientWebController::class, 'show'])->name('clients.show');
         Route::get('/clientes/{uuid}/editar',    [ClientWebController::class, 'edit'])->name('clients.edit');
         Route::put('/clientes/{uuid}',           [ClientWebController::class, 'update'])->name('clients.update');

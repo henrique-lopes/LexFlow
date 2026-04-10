@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Button from '@/Components/UI/Button';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, FileText, Loader2, CheckCircle, AlertCircle, Upload } from 'lucide-react';
 
 function FInput({ ...props }) {
     return (
@@ -43,6 +43,63 @@ function formatCNPJ(v) {
         .replace(/(\d{3})(\d)/, '$1.$2')
         .replace(/(\d{3})(\d)/, '$1/$2')
         .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+}
+
+function ProcuracaoUpload({ onExtracted }) {
+    const [state, setState] = useState('idle'); // idle | loading | success | error
+    const [msg, setMsg]     = useState('');
+    const [dragging, setDragging] = useState(false);
+    const inputRef = useRef();
+
+    async function process(file) {
+        if (!file) return;
+        setState('loading');
+        setMsg('');
+        const form = new FormData();
+        form.append('file', file);
+        form.append('_token', document.querySelector('meta[name="csrf-token"]')?.content);
+        try {
+            const res  = await fetch('/clientes/extrair-procuracao', { method: 'POST', body: form });
+            const json = await res.json();
+            if (!res.ok) { setState('error'); setMsg(json.error ?? 'Erro ao processar.'); return; }
+            setState('success');
+            setMsg('Dados extraídos! Confirme as informações abaixo.');
+            onExtracted(json.data);
+        } catch {
+            setState('error');
+            setMsg('Erro de conexão.');
+        }
+    }
+
+    return (
+        <div className="bg-[#13161E] border border-[#1E2330] rounded-xl p-6">
+            <h3 className="text-sm font-semibold text-[#E8EAF0] mb-1">Importar via Procuração</h3>
+            <p className="text-xs text-[#6B7491] mb-4">Faça upload da procuração (PDF ou imagem) e a IA preencherá os dados automaticamente.</p>
+            <div
+                onClick={() => state !== 'loading' && inputRef.current?.click()}
+                onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={e => { e.preventDefault(); setDragging(false); process(e.dataTransfer.files[0]); }}
+                className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-colors
+                    ${state === 'loading' ? 'opacity-60 cursor-not-allowed' : 'hover:border-[#C9A84C]/50 hover:bg-[#C9A84C]/5'}
+                    ${dragging ? 'border-[#C9A84C] bg-[#C9A84C]/5' : 'border-[#1E2330]'}
+                    ${state === 'success' ? 'border-[#2ECC8A]/40 bg-[#2ECC8A]/5' : ''}
+                    ${state === 'error'   ? 'border-[#E05555]/40 bg-[#E05555]/5'  : ''}`}
+            >
+                {state === 'loading' ? (
+                    <><Loader2 size={24} className="text-[#C9A84C] animate-spin" /><p className="text-sm text-[#6B7491]">Processando com IA...</p></>
+                ) : state === 'success' ? (
+                    <><CheckCircle size={24} className="text-[#2ECC8A]" /><p className="text-sm text-[#2ECC8A]">{msg}</p></>
+                ) : state === 'error' ? (
+                    <><AlertCircle size={24} className="text-[#E05555]" /><p className="text-sm text-[#E05555]">{msg}</p><p className="text-xs text-[#6B7491]">Clique para tentar novamente</p></>
+                ) : (
+                    <><Upload size={24} className="text-[#6B7491]" /><p className="text-sm text-[#6B7491]">Arraste ou clique para selecionar</p><p className="text-xs text-[#6B7491]">PDF, JPG ou PNG — máx. 10MB</p></>
+                )}
+            </div>
+            <input ref={inputRef} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden"
+                onChange={e => process(e.target.files[0])} />
+        </div>
+    );
 }
 
 export default function ClientsCreate({ lawyers }) {
@@ -101,6 +158,27 @@ export default function ClientsCreate({ lawyers }) {
         } catch {}
     }
 
+    function handleExtracted(extracted) {
+        setData(d => ({
+            ...d,
+            name:                 extracted.name         ?? d.name,
+            nationality:          extracted.nationality  ?? d.nationality,
+            marital_status:       extracted.marital_status ?? d.marital_status,
+            profession:           extracted.profession   ?? d.profession,
+            rg:                   extracted.rg           ?? d.rg,
+            cpf:                  extracted.cpf          ?? d.cpf,
+            email:                extracted.email        ?? d.email,
+            phone:                extracted.phone        ?? d.phone,
+            address_street:       extracted.address_street       ?? d.address_street,
+            address_number:       extracted.address_number       ?? d.address_number,
+            address_complement:   extracted.address_complement   ?? d.address_complement,
+            address_neighborhood: extracted.address_neighborhood ?? d.address_neighborhood,
+            address_city:         extracted.address_city         ?? d.address_city,
+            address_state:        extracted.address_state        ?? d.address_state,
+            address_zipcode:      extracted.address_zipcode      ?? d.address_zipcode,
+        }));
+    }
+
     function submit(e) {
         e.preventDefault();
         post(route('clients.store'));
@@ -120,6 +198,9 @@ export default function ClientsCreate({ lawyers }) {
             <form onSubmit={submit}>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
+                        {/* Procuração IA */}
+                        <ProcuracaoUpload onExtracted={handleExtracted} />
+
                         {/* Type toggle */}
                         <div className="bg-[#13161E] border border-[#1E2330] rounded-xl p-6">
                             <h3 className="text-sm font-semibold text-[#E8EAF0] mb-4">Tipo de Cliente</h3>
