@@ -60,6 +60,7 @@ export default function CasesCreate({ clients, lawyers }) {
         area: '', cnj_number: '', court: '', court_city: '', court_state: '', tribunal: '',
         status: 'active', phase: '', side: 'author',
         fee_type: 'fixed', fee_amount: '', fee_success_pct: '', case_value: '',
+        fee_payment_type: 'cash', fee_downpayment: '', fee_installments: [],
         filed_at: '', next_deadline: '', notes: '', lawyer_ids: [],
         opposing_party: '', opposing_lawyer: '', opposing_oab: '',
     });
@@ -67,6 +68,9 @@ export default function CasesCreate({ clients, lawyers }) {
     const [caseValueDisplay, setCaseValueDisplay] = useState(
         data.case_value ? Number(data.case_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''
     );
+    const [feeAmountDisplay, setFeeAmountDisplay] = useState('');
+    const [feeDownpaymentDisplay, setFeeDownpaymentDisplay] = useState('');
+    const [installmentDisplays, setInstallmentDisplays] = useState([]);
 
     function submit(e) {
         e.preventDefault();
@@ -249,9 +253,21 @@ export default function CasesCreate({ clients, lawyers }) {
                                 </Field>
                                 {['fixed','mixed'].includes(data.fee_type) && (
                                     <Field label="Valor Fixo (R$)">
-                                        <FInput type="number" step="0.01" value={data.fee_amount}
-                                            onChange={e => setData('fee_amount', e.target.value)}
-                                            placeholder="0,00" />
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#6B7491]">R$</span>
+                                            <FInput
+                                                type="text"
+                                                inputMode="numeric"
+                                                value={feeAmountDisplay}
+                                                onChange={e => {
+                                                    const fmt = formatCurrency(e.target.value);
+                                                    setFeeAmountDisplay(fmt);
+                                                    setData('fee_amount', parseCurrency(fmt));
+                                                }}
+                                                placeholder="0,00"
+                                                className="pl-9"
+                                            />
+                                        </div>
                                     </Field>
                                 )}
                                 {['success','mixed'].includes(data.fee_type) && (
@@ -265,6 +281,8 @@ export default function CasesCreate({ clients, lawyers }) {
                                     <div className="relative">
                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#6B7491]">R$</span>
                                         <FInput
+                                            type="text"
+                                            inputMode="numeric"
                                             value={caseValueDisplay}
                                             onChange={e => {
                                                 const fmt = formatCurrency(e.target.value);
@@ -276,6 +294,119 @@ export default function CasesCreate({ clients, lawyers }) {
                                         />
                                     </div>
                                 </Field>
+
+                                {/* Forma de Pagamento */}
+                                <div className="border-t border-[#1E2330] pt-4">
+                                    <p className="text-xs font-semibold text-[#6B7491] uppercase tracking-wider mb-3">Forma de Pagamento</p>
+                                    <div className="flex gap-3 mb-4">
+                                        {[['cash','À Vista'],['installment','Parcelado']].map(([v,l]) => (
+                                            <button
+                                                key={v}
+                                                type="button"
+                                                onClick={() => setData('fee_payment_type', v)}
+                                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                                                    data.fee_payment_type === v
+                                                        ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0D0F14]'
+                                                        : 'border-[#1E2330] text-[#6B7491] hover:border-[#C9A84C] hover:text-[#C9A84C]'
+                                                }`}
+                                            >{l}</button>
+                                        ))}
+                                    </div>
+
+                                    {data.fee_payment_type === 'installment' && (
+                                        <div className="space-y-3">
+                                            <Field label="Entrada (R$)">
+                                                <div className="relative">
+                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#6B7491]">R$</span>
+                                                    <FInput
+                                                        type="text"
+                                                        inputMode="numeric"
+                                                        value={feeDownpaymentDisplay}
+                                                        onChange={e => {
+                                                            const fmt = formatCurrency(e.target.value);
+                                                            setFeeDownpaymentDisplay(fmt);
+                                                            setData('fee_downpayment', parseCurrency(fmt));
+                                                        }}
+                                                        placeholder="0,00"
+                                                        className="pl-9"
+                                                    />
+                                                </div>
+                                            </Field>
+
+                                            <div>
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="text-xs font-medium text-[#6B7491] uppercase tracking-wider">Parcelas</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setData('fee_installments', [...data.fee_installments, { amount: '', due_date: '', paid: false }]);
+                                                            setInstallmentDisplays(prev => [...prev, '']);
+                                                        }}
+                                                        className="text-xs text-[#C9A84C] hover:text-[#E8C95D] font-medium"
+                                                    >+ Adicionar parcela</button>
+                                                </div>
+
+                                                {data.fee_installments.length === 0 && (
+                                                    <p className="text-xs text-[#6B7491] text-center py-3">Nenhuma parcela adicionada.</p>
+                                                )}
+
+                                                <div className="space-y-2">
+                                                    {data.fee_installments.map((inst, idx) => (
+                                                        <div key={idx} className="flex gap-2 items-center bg-[#0D0F14] border border-[#1E2330] rounded-lg px-3 py-2">
+                                                            <span className="text-xs text-[#6B7491] w-5 shrink-0">{idx + 1}.</span>
+                                                            <div className="relative flex-1">
+                                                                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-[#6B7491]">R$</span>
+                                                                <input
+                                                                    type="text"
+                                                                    inputMode="numeric"
+                                                                    value={installmentDisplays[idx] ?? ''}
+                                                                    onChange={e => {
+                                                                        const fmt = formatCurrency(e.target.value);
+                                                                        const newDisplays = [...installmentDisplays];
+                                                                        newDisplays[idx] = fmt;
+                                                                        setInstallmentDisplays(newDisplays);
+                                                                        const newInst = [...data.fee_installments];
+                                                                        newInst[idx] = { ...newInst[idx], amount: parseCurrency(fmt) };
+                                                                        setData('fee_installments', newInst);
+                                                                    }}
+                                                                    placeholder="0,00"
+                                                                    className="w-full bg-transparent pl-7 text-sm text-[#E8EAF0] placeholder-[#6B7491] focus:outline-none"
+                                                                />
+                                                            </div>
+                                                            <input
+                                                                type="date"
+                                                                value={inst.due_date ?? ''}
+                                                                onChange={e => {
+                                                                    const newInst = [...data.fee_installments];
+                                                                    newInst[idx] = { ...newInst[idx], due_date: e.target.value };
+                                                                    setData('fee_installments', newInst);
+                                                                }}
+                                                                className="bg-transparent text-sm text-[#E8EAF0] focus:outline-none w-36 shrink-0"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newInst = [...data.fee_installments];
+                                                                    newInst[idx] = { ...newInst[idx], paid: !newInst[idx].paid };
+                                                                    setData('fee_installments', newInst);
+                                                                }}
+                                                                className={`text-xs px-2 py-1 rounded shrink-0 ${inst.paid ? 'bg-green-900/40 text-green-400' : 'bg-[#1E2330] text-[#6B7491]'}`}
+                                                            >{inst.paid ? 'Pago' : 'Pendente'}</button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setData('fee_installments', data.fee_installments.filter((_, i) => i !== idx));
+                                                                    setInstallmentDisplays(prev => prev.filter((_, i) => i !== idx));
+                                                                }}
+                                                                className="text-[#E05555] hover:text-red-400 text-xs shrink-0"
+                                                            >✕</button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
